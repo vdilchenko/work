@@ -15,6 +15,7 @@ from selenium.common.exceptions import StaleElementReferenceException, NoSuchEle
 
 _VERSION = '1.0'
 
+
 def login(url, email, password):
     """
     This function logging in a user with given email and password.
