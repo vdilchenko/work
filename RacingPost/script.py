@@ -1,3 +1,7 @@
+"""
+This program scrapes data from RacingPost and PedigreeQuery and extracts it to an Excel files when data length equals to 100 or more.
+This is not final version of a program.
+"""
 import collections
 from selenium import webdriver
 import time
@@ -9,6 +13,7 @@ import lxml
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, TimeoutException
 
+_VERSION = '1.0'
 
 def login(url, email, password):
     """
