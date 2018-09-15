@@ -86,8 +86,8 @@ def count_pages(soup):
 
 
 if __name__ == '__main__':
-    # chromedriver = 'chromedriver.exe' # for Windows OS
-    chromedriver = '/Users/ilchenkoslava/Downloads/chromedriver3'
+    chromedriver = 'chromedriver.exe' # for Windows OS
+    # chromedriver = '/Users/ilchenkoslava/Downloads/chromedriver3'
     driver = webdriver.Chrome(chromedriver)
 
     login('https://www.racingpost.com/', 'jmcatelen@hotmail.com', '22Muyse22')
@@ -107,7 +107,7 @@ if __name__ == '__main__':
                 copy_list = lists
                 if counter > 100:
                     print(k)
-                    filename = '%d' + k % counter
+                    filename = '{0} '.format(counter) + k
                     save_to_excel(lists, filename)
                     counter = 0
                     lists = collections.defaultdict(list)
