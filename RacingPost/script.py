@@ -1,5 +1,6 @@
 """
-This program scrapes data from RacingPost and PedigreeQuery and extracts it to an Excel files when data length equals to 100 or more.
+This program scrapes data from RacingPost and PedigreeQuery and extracts it to an Excel files
+when data length equals to 100 or more.
 This is not final version of a program.
 """
 import collections
@@ -46,7 +47,7 @@ def login(url, email, password):
     time.sleep(10)
 
 
-def save_to_excel(data, number):
+def save_to_excel(data, name):
     """
     This functions saves data(that is represented as dictionary collection) to Excel file.
     :param data: dictionary.
@@ -60,7 +61,7 @@ def save_to_excel(data, number):
     for num in nums:
         columns.append(num)
     df = df[columns]
-    filename = "Output #%d.xls" % number
+    filename = "Output #%s.xls" % name
     writer = pd.ExcelWriter(filename)
     df.to_excel(writer)
     writer.save()
@@ -85,7 +86,8 @@ def count_pages(soup):
 
 
 if __name__ == '__main__':
-    chromedriver = 'chromedriver.exe'
+    # chromedriver = 'chromedriver.exe' # for Windows OS
+    chromedriver = '/Users/ilchenkoslava/Downloads/chromedriver3'
     driver = webdriver.Chrome(chromedriver)
 
     login('https://www.racingpost.com/', 'jmcatelen@hotmail.com', '22Muyse22')
@@ -105,7 +107,8 @@ if __name__ == '__main__':
                 copy_list = lists
                 if counter > 100:
                     print(k)
-                    save_to_excel(lists, counter)
+                    filename = '%d' + k % counter
+                    save_to_excel(lists, filename)
                     counter = 0
                     lists = collections.defaultdict(list)
 
@@ -139,24 +142,19 @@ if __name__ == '__main__':
                                 table = driver.find_element_by_class_name('pedigreetable')
                                 abc = 'ch.', 'gr.', 'b.', 'br.', 'blk.', 'dkb/br.', 'blk/br.', 'chuck.'
                                 if table.find_elements_by_class_name('w'):
-                                    print('a')
                                     for zz in range(1, 63):
                                         lists[str(zz)].append('-')
                                     continue
 
-                                for m in table.find_elements_by_class_name('m'):
-                                    horsename_m = m.find_element_by_xpath('//a[@class="horseName"]').text
-                                    if (horsename_m.startswith(abc)) or (horsename_m.isupper() is False):
-                                        continue
-                                    male.append((m.get_attribute('data-g'), horsename_m.replace('\n', '')))
+                                for m in table.find_elements_by_class_name('f'):
+                                    if m.get_attribute('data-g') is not None:
+                                        male.append((m.get_attribute('data-g'),
+                                                     m.text.replace('\n', '').split(')')[0] + ')'))
 
                                 for f in table.find_elements_by_class_name('f'):
-                                    horsename_f = f.find_element_by_xpath('//a[@class="horseName"]').text
-                                    if (horsename_f.startswith(abc)) or (horsename_f.isupper() is False):
-                                        continue
-                                    female.append((f.get_attribute('data-g'), horsename_f.replace('\n', '')))
-                                print(male)
-                                print(female)
+                                    if f.get_attribute('data-g') is not None:
+                                        female.append((f.get_attribute('data-g'),
+                                                       f.text.replace('\n', '').split(')')[0] + ')'))
 
                                 for i, ma in enumerate(sorted(male, key=lambda i: i[0]), 1):
                                     lists[str(i)].append(ma[1])
@@ -168,7 +166,7 @@ if __name__ == '__main__':
                                 for zz in range(1, 63):
                                     lists[str(zz)].append('-')
                             except TimeoutException:
-                                save_to_excel(copy_list, counter)
+                                save_to_excel(copy_list, filename)
 
                         for horse_url in horses_urls:
                             driver.get(horse_url)
@@ -222,10 +220,9 @@ if __name__ == '__main__':
 
             break
         except KeyboardInterrupt:
-            save_to_excel(lists, counter)
+            save_to_excel(lists, filename)
             exit()
         except TimeoutException:
             print(k)
-            save_to_excel(copy_list, counter)
-    save_to_excel(lists, counter)
-    
+            save_to_excel(copy_list, filename)
+    save_to_excel(lists, filename)
