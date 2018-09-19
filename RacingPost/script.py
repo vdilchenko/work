@@ -1,8 +1,3 @@
-"""
-This program scrapes data from RacingPost and PedigreeQuery and extracts it to an Excel files
-when data length equals to 100 or more.
-This is not final version of a program.
-"""
 import collections
 from threading import Thread
 from selenium import webdriver
