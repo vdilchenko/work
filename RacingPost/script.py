@@ -4,6 +4,7 @@ when data length equals to 100 or more.
 This is not final version of a program.
 """
 import collections
+from threading import Thread
 from selenium import webdriver
 import time
 import itertools
@@ -13,11 +14,12 @@ from bs4 import BeautifulSoup
 import lxml
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, TimeoutException
+import os
 
-_VERSION = '1.0'
+_VERSION = '1.1'
 
 
-def login(url, email, password):
+def login(driver, url, email, password):
     """
     This function logging in a user with given email and password.
     :param url: address of the web page
@@ -53,18 +55,21 @@ def save_to_excel(data, name):
     :param data: dictionary.
     """
 
-    df = pd.DataFrame(data, columns=data.keys())
-
-    df.index += 1
-    columns = ['Fullname', 'Runs', 'Wins', '2nds', '3rds', 'Earnings', 'OR', 'TS', 'RPR']
-    nums = [str(num) for num in range(1, 63)]
-    for num in nums:
-        columns.append(num)
-    df = df[columns]
-    filename = "Output #%s.xls" % name
-    writer = pd.ExcelWriter(filename)
-    df.to_excel(writer)
-    writer.save()
+    try:
+        df = pd.DataFrame(data, columns=data.keys())
+        df.index += 1
+        columns = ['Fullname', 'Runs', 'Wins', '2nds', '3rds', 'Earnings', 'OR', 'TS', 'RPR']
+        nums = [str(num) for num in range(1, 63)]
+        for num in nums:
+            columns.append(num)
+        df = df[columns]
+        filename = "Output #%s.xls" % name
+        writer = pd.ExcelWriter(filename)
+        df.to_excel(writer)
+        writer.save()
+    except ValueError:
+        for key, value in data.items():
+            print(key, len(value))
 
 
 def count_pages(soup):
@@ -85,28 +90,61 @@ def count_pages(soup):
     return int(pages)
 
 
-if __name__ == '__main__':
-    chromedriver = 'chromedriver.exe' # for Windows OS
+def concat():
+    """
+    This functions concatenates all Excel files which are placed in the path of the program into 1 .xls file.
+    """
+    def save(result, x):
+        """
+        This function saves the results(concatenated dataframes) into an Excel file.
+        :param result: concatenated dataframes
+        :param x: number of dataframes
+        """
+        filename = 'Concatenated file #%s.xls' % x
+        writer = pd.ExcelWriter(filename)
+        result.to_excel(writer)
+        writer.save()
+
+    files = []
+    path = '.'
+    filenames = os.listdir(path)
+    for filename in filenames:
+        if filename.endswith('.xls'):
+            fil = pd.read_excel(filename)
+            files.append(fil)
+
+    a = 0
+    for x in range(1, len(files)):
+        if x % 11 == 0:
+            result = pd.concat(files[a:x], ignore_index=True)
+            save(result, x)
+            a += 11
+        elif x == len(files) - 1:
+            result = pd.concat(files[a:x], ignore_index=True)
+            save(result, x)
+
+
+def main(combo, proc, end=None):
+    chromedriver = 'chromedriver.exe'  # for Windows OS
     # chromedriver = '/Users/ilchenkoslava/Downloads/chromedriver3'
     driver = webdriver.Chrome(chromedriver)
 
-    login('https://www.racingpost.com/', 'jmcatelen@hotmail.com', '22Muyse22')
+    login(driver, 'https://www.racingpost.com/', 'jmcatelen@hotmail.com', '22Muyse22')
 
     chars = [chr(c) for c in range(ord('a'), ord('z') + 1)]
     keywords = [''.join(i) for i in itertools.product(chars, repeat=3)]
+    if end is None:
+        end = keywords[-1]
     query_url = 'https://www.racingpost.com/search/?tab=profiles&page=%d&query=%s&profiles_type=horses_profiles'
     lists = collections.defaultdict(list)
-    by_xpaths = driver.find_elements_by_xpath
     counter = 0
 
     while True:
         try:
-            for k in keywords[keywords.index('aas')+1:]:
-                # for key, value in lists.items():
-                #     print(key, len(value))
+            for k in keywords[keywords.index(combo) - 1:keywords.index(end)]:
                 copy_list = lists
                 if counter > 100:
-                    print(k)
+                    print(k, proc)
                     filename = '{0} '.format(counter) + k
                     save_to_excel(lists, filename)
                     counter = 0
@@ -140,7 +178,6 @@ if __name__ == '__main__':
                             female = []
                             try:
                                 table = driver.find_element_by_class_name('pedigreetable')
-                                abc = 'ch.', 'gr.', 'b.', 'br.', 'blk.', 'dkb/br.', 'blk/br.', 'chuck.'
                                 if table.find_elements_by_class_name('w'):
                                     for zz in range(1, 63):
                                         lists[str(zz)].append('-')
@@ -161,8 +198,6 @@ if __name__ == '__main__':
                                 for ii, fe in enumerate(sorted(female, key=lambda i: i[0]), 1):
                                         lists[str(len(male) + ii)].append(fe[1])
                             except (StaleElementReferenceException, NoSuchElementException) as e:
-                                print(e)
-                                print('raz')
                                 for zz in range(1, 63):
                                     lists[str(zz)].append('-')
                             except TimeoutException:
@@ -188,41 +223,73 @@ if __name__ == '__main__':
                             time.sleep(3)
                             counter += 1
                             print(counter)
-                            if 'No race record for this horse' not in \
-                                    by_xpaths('//tbody[@class="ui-table__body"]//tr[1]/td')[0].text:
-                                lists['Runs'].append(by_xpaths('//tbody[@class="ui-table__body"]//tr[last()]/td')[1].text)
-                                lists['Wins'].append(by_xpaths('//tbody[@class="ui-table__body"]//tr[last()]/td')[2].text)
-                                lists['2nds'].append(by_xpaths('//tbody[@class="ui-table__body"]//tr[last()]/td')[3].text)
-                                lists['3rds'].append(by_xpaths('//tbody[@class="ui-table__body"]//tr[last()]/td')[4].text)
-                                lists['Earnings'].append(by_xpaths('//tbody[@class="ui-table__body"]//tr[last()]/td')[7].text)
-                                ors = []
-                                tss = []
-                                rprs = []
-                                for rows in by_xpaths('//tbody[@class="ui-table__body"]//tr'):
-                                    ors.append(rows.find_elements_by_xpath('//td')[8].text)
-                                for rows in by_xpaths('//tbody[@class="ui-table__body"]//tr'):
-                                    tss.append(rows.find_elements_by_xpath('//td')[9].text)
-                                for rows in by_xpaths('//tbody[@class="ui-table__body"]//tr'):
-                                    rprs.append(rows.find_elements_by_xpath('//td')[10].text)
-                                lists['OR'].append(max(ors))
-                                lists['TS'].append(max(tss))
-                                lists['RPR'].append(max(rprs))
-                            else:
-                                print('No data')
-                                for key, v in lists.items():
-                                    try:
-                                        if isinstance(int(key), int):
-                                            continue
-                                    except ValueError:
-                                        if key == 'Fullname':
-                                            continue
-                                        v.append('-')
-
+                            try:
+                                if driver.find_element_by_class_name('ui-errorMessage__text'):
+                                    print('No data')
+                                    lists['OR'].append('-')
+                                    lists['TS'].append('-')
+                                    lists['RPR'].append('-')
+                                    lists['Runs'].append('-')
+                                    lists['Wins'].append('-')
+                                    lists['2nds'].append('-')
+                                    lists['3rds'].append('-')
+                                    lists['Earnings'].append('-')
+                            except NoSuchElementException:
+                                soup_form = BeautifulSoup(driver.page_source, 'lxml')
+                                try:
+                                    trs = soup_form.find_all('tbody', {'class': 'ui-table__body'})[0].find_all('tr')
+                                    tds = trs[-1].find_all('td')
+                                    lists['Runs'].append(tds[1].text)
+                                    lists['Wins'].append(tds[2].find_all('span')[0].text.split('/')[0])
+                                    lists['2nds'].append(tds[3].text)
+                                    lists['3rds'].append(tds[4].text)
+                                    lists['Earnings'].append(tds[7].text)
+                                    ors = []
+                                    tss = []
+                                    rprs = []
+                                    for rows in trs:
+                                        if '—' not in rows.find_all('td')[8].text:
+                                            ors.append(int(rows.find_all('td')[8].text))
+                                    for rows in trs:
+                                        if '—' not in rows.find_all('td')[9].text:
+                                            tss.append(int(rows.find_all('td')[9].text))
+                                    for rows in trs:
+                                        if '—' not in rows.find_all('td')[10].text:
+                                            rprs.append(int(rows.find_all('td')[10].text))
+                                    lists['OR'].append(max(ors))
+                                    lists['TS'].append(max(tss))
+                                    lists['RPR'].append(max(rprs))
+                                except IndexError:
+                                    time.sleep(5)
+                                    print('InderError appeared')
+                                    lists['OR'].append('-')
+                                    lists['TS'].append('-')
+                                    lists['RPR'].append('-')
+                                    lists['Runs'].append('-')
+                                    lists['Wins'].append('-')
+                                    lists['2nds'].append('-')
+                                    lists['3rds'].append('-')
+                                    lists['Earnings'].append('-')
+                        len_value = len(lists['OR'])
+                        if all(len_value == len(value) for value in lists.values()) is False:
+                            for key, value in lists.items():
+                                print(key, len(value), value)
+                            exit()
             break
         except KeyboardInterrupt:
-            save_to_excel(lists, filename)
+            save_to_excel(copy_list, filename)
             exit()
         except TimeoutException:
             print(k)
             save_to_excel(copy_list, filename)
     save_to_excel(lists, filename)
+
+
+if __name__ == '__main__':
+    """
+    To run program from different combinations of 3 letters in parallel, added Threads.
+    """
+    t1 = Thread(target=main, args=('gip', 1))
+    t2 = Thread(target=main, args=('abv', 2, 'gip'))
+    t1.start()
+    t2.start()
