@@ -26,14 +26,10 @@ for filename in filenames:
 
 a = 0
 for x in range(1, len(files)):
-    print(x)
     if x % 11 == 0:
-        print(a, x)
         result = pd.concat(files[a:x], ignore_index=True)
         save(result, x)
         a += 11
     elif x == len(files) - 1:
-        print('vse')
-        print(a, x)
         result = pd.concat(files[a:x], ignore_index=True)
         save(result, x)
