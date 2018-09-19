@@ -109,7 +109,7 @@ def main(start, proc, end=None):
         try:
             for k in keywords[keywords.index(start):keywords.index(end)]:
                 copy_list = lists
-                if counter > 1:
+                if counter > 1000:
                     print(k, proc)
                     filename = '{0} '.format(counter) + k
                     save_to_excel(lists, filename)
