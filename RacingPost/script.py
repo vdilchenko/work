@@ -256,12 +256,13 @@ def main(combo, proc, end=None):
                                     for rows in trs:
                                         if '—' not in rows.find_all('td')[10].text:
                                             rprs.append(int(rows.find_all('td')[10].text))
-                                    lists['OR'].append(max(ors))
-                                    lists['TS'].append(max(tss))
-                                    lists['RPR'].append(max(rprs))
+
+                                    lists['OR'].append('-') if len(ors) == 0 else lists['OR'].append(max(ors))
+                                    lists['TS'].append('-') if len(tss) == 0 else lists['TS'].append(max(tss))
+                                    lists['RPR'].append('-') if len(rprs) == 0 else lists['RPR'].append(max(rprs))
                                 except IndexError:
                                     time.sleep(5)
-                                    print('InderError appeared')
+                                    print('IndexError appeared')
                                     lists['OR'].append('-')
                                     lists['TS'].append('-')
                                     lists['RPR'].append('-')
