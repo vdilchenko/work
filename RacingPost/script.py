@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import collections
 from threading import Thread
 from selenium import webdriver
