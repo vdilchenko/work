@@ -33,16 +33,14 @@ def login(driver, url, email, password):
             driver.find_elements_by_xpath('//div[@class="rn-menuBar__navWrp"]//''div[@id="react-rp-auth-root"]'
                                           '//div//div//div//div')[0].click()
             break
-        except WebDriverException:
+        except (WebDriverException, IndexError):
             print("Reload %s" % count)
 
     driver.find_elements_by_xpath('//div[@class="fields__validationWrapper___3D3Kv"]')[0]\
         .find_element_by_tag_name('input').send_keys(email)
     driver.find_elements_by_xpath('//div[@class="fields__validationWrapper___3D3Kv"]')[1]\
         .find_element_by_tag_name('input').send_keys(password)
-
     driver.find_element_by_xpath('//div[@class="fields__submitField___T-_wW"]//button').click()
-
     time.sleep(10)
 
 
@@ -89,10 +87,14 @@ def count_pages(soup):
 
 def main(start, proc, end=None):
 
-    chromedriver = 'chromedriver.exe'  # for Windows OS
-    # chromedriver = '/Users/ilchenkoslava/Downloads/chromedriver3'
-    driver = webdriver.Chrome(chromedriver)
-
+    chromedriver = 'chromedriver.exe'  # for Windows OS Chrome
+    # chromedriver = '/Users/ilchenkoslava/Downloads/chromedriver3' # for Mac OS
+    # prefs = {"profile.managed_default_content_settings.images": 2}
+    # chrome_option = webdriver.ChromeOptions()
+    # chrome_option.add_experimental_option("prefs", prefs)
+    # chrome_option.add_argument("headless")
+    # driver = webdriver.Chrome(executable_path=chromedriver, chrome_options=chrome_option)
+    driver = webdriver.Chrome(executable_path=chromedriver)
     login(driver, 'https://www.racingpost.com/', 'jmcatelen@hotmail.com', '22Muyse22')
 
     chars = [chr(c) for c in range(ord('a'), ord('z') + 1)]
@@ -107,7 +109,7 @@ def main(start, proc, end=None):
         try:
             for k in keywords[keywords.index(start):keywords.index(end)]:
                 copy_list = lists
-                if counter > 1000:
+                if counter > 1:
                     print(k, proc)
                     filename = '{0} '.format(counter) + k
                     save_to_excel(lists, filename)
