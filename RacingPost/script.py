@@ -89,12 +89,12 @@ def main(start, proc, end=None):
 
     chromedriver = 'chromedriver.exe'  # for Windows OS Chrome
     # chromedriver = '/Users/ilchenkoslava/Downloads/chromedriver3' # for Mac OS
-    # prefs = {"profile.managed_default_content_settings.images": 2}
-    # chrome_option = webdriver.ChromeOptions()
-    # chrome_option.add_experimental_option("prefs", prefs)
+    prefs = {"profile.managed_default_content_settings.images": 2}
+    chrome_option = webdriver.ChromeOptions()
+    chrome_option.add_experimental_option("prefs", prefs)
     # chrome_option.add_argument("headless")
-    # driver = webdriver.Chrome(executable_path=chromedriver, chrome_options=chrome_option)
-    driver = webdriver.Chrome(executable_path=chromedriver)
+    driver = webdriver.Chrome(executable_path=chromedriver, chrome_options=chrome_option)
+    # driver = webdriver.Chrome(executable_path=chromedriver)
     login(driver, 'https://www.racingpost.com/', 'jmcatelen@hotmail.com', '22Muyse22')
 
     chars = [chr(c) for c in range(ord('a'), ord('z') + 1)]
@@ -253,8 +253,20 @@ def main(start, proc, end=None):
 
 
 if __name__ == '__main__':
-    t1 = Thread(target=main, args=('giq', 1))
-    t2 = Thread(target=main, args=('abv', 2, 'giq'))
+    t1 = Thread(target=main, args=('abv', 2, 'giq'))
+    t2 = Thread(target=main, args=('giq', 1, 'iii'))
+    t3 = Thread(target=main, args=('iii', 1, 'mmm'))
+    t4 = Thread(target=main, args=('mmm', 2, 'ppp'))
+    t5 = Thread(target=main, args=('ppp', 1, 'sss'))
+    t6 = Thread(target=main, args=('sss', 2, 'uuu'))
+    t7 = Thread(target=main, args=('uuu', 1, 'xxx'))
+    t8 = Thread(target=main, args=('xxx', 2, 'zzz'))
     t1.start()
     t2.start()
+    t3.start()
+    t4.start()
+    t5.start()
+    t6.start()
+    t7.start()
+    t8.start()
 
