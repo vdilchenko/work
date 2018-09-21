@@ -242,7 +242,7 @@ def main(start, proc, end=None):
                             for key, value in lists.items():
                                 print(key, len(value), value)
                             exit()
-            print(proc)
+            print("THREAD #%d IS OVER" % proc)
             break
         except KeyboardInterrupt:
             save_to_excel(copy_list, filename)
