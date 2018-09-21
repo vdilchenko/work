@@ -13,7 +13,7 @@ from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, TimeoutException
 import os
 
-_VERSION = '1.2'
+_VERSION = '1.3'
 
 
 def login(driver, url, email, password):
@@ -86,7 +86,6 @@ def count_pages(soup):
 
 
 def main(start, proc, end=None):
-
     chromedriver = 'chromedriver.exe'  # for Windows OS Chrome
     # chromedriver = '/Users/ilchenkoslava/Downloads/chromedriver3' # for Mac OS
     prefs = {"profile.managed_default_content_settings.images": 2}
@@ -109,18 +108,19 @@ def main(start, proc, end=None):
         try:
             for k in keywords[keywords.index(start):keywords.index(end)]:
                 copy_list = lists
-                if counter > 1000:
-                    print(k, proc)
+                if counter > 10000:
+                    # print(k, proc)
                     filename = '{0} '.format(counter) + k
                     save_to_excel(lists, filename)
                     counter = 0
                     lists = collections.defaultdict(list)
+                    exit()
 
                 driver.get(query_url % (1, k))
                 time.sleep(3)
                 soup = BeautifulSoup(driver.page_source, 'lxml')
                 if soup.find('span', {'class': 'search-resultCounter'}).text == '0':
-                    print('No horses here')
+                    # print('No horses here')
                     continue
                 else:
                     pages = count_pages(soup)
@@ -191,7 +191,7 @@ def main(start, proc, end=None):
                             # print(counter)
                             try:
                                 if driver.find_element_by_class_name('ui-errorMessage__text'):
-                                    print('No data')
+                                    # print('No data')
                                     lists['OR'].append('-')
                                     lists['TS'].append('-')
                                     lists['RPR'].append('-')
@@ -247,20 +247,22 @@ def main(start, proc, end=None):
             save_to_excel(copy_list, filename)
             exit()
         except TimeoutException:
-            print(k)
             save_to_excel(copy_list, filename)
+            exit()
     save_to_excel(lists, filename)
 
 
 if __name__ == '__main__':
-    t1 = Thread(target=main, args=('abv', 2, 'giq'))
-    t2 = Thread(target=main, args=('giq', 1, 'iii'))
-    t3 = Thread(target=main, args=('iii', 1, 'mmm'))
-    t4 = Thread(target=main, args=('mmm', 2, 'ppp'))
-    t5 = Thread(target=main, args=('ppp', 1, 'sss'))
-    t6 = Thread(target=main, args=('sss', 2, 'uuu'))
-    t7 = Thread(target=main, args=('uuu', 1, 'xxx'))
-    t8 = Thread(target=main, args=('xxx', 2, 'zzz'))
+    t1 = Thread(target=main, args=('abv', 1, 'giq'))
+    t2 = Thread(target=main, args=('giq', 2, 'iii'))
+    t3 = Thread(target=main, args=('iii', 3, 'lll'))
+    t4 = Thread(target=main, args=('nnn', 4, 'ppp'))
+    t5 = Thread(target=main, args=('ppp', 5, 'rrr'))
+    t6 = Thread(target=main, args=('rrr', 6, 'ttt'))
+    t7 = Thread(target=main, args=('ttt', 7, 'vvv'))
+    t8 = Thread(target=main, args=('vvv', 8, 'xxx'))
+    t9 = Thread(target=main, args=('xxx', 9, 'zzz'))
+    t10 = Thread(target=main, args=('lll', 10, 'nnn'))
     t1.start()
     t2.start()
     t3.start()
@@ -269,4 +271,6 @@ if __name__ == '__main__':
     t6.start()
     t7.start()
     t8.start()
-
+    t9.start()
+    t10.start()
+    
