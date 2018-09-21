@@ -242,6 +242,7 @@ def main(start, proc, end=None):
                             for key, value in lists.items():
                                 print(key, len(value), value)
                             exit()
+            print(proc)
             break
         except KeyboardInterrupt:
             save_to_excel(copy_list, filename)
