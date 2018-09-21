@@ -95,7 +95,7 @@ def main(start, proc, end=None):
     # chrome_option.add_argument("headless")
     driver = webdriver.Chrome(executable_path=chromedriver, chrome_options=chrome_option)
     # driver = webdriver.Chrome(executable_path=chromedriver)
-    login(driver, 'https://www.racingpost.com/', 'jmcatelen@hotmail.com', '22Muyse22')
+    login(driver, 'https://www.racingpost.com/', 'login', 'password')
 
     chars = [chr(c) for c in range(ord('a'), ord('z') + 1)]
     keywords = [''.join(i) for i in itertools.product(chars, repeat=3)]
