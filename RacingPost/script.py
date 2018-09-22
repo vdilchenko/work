@@ -36,9 +36,9 @@ def login(driver, url, email, password):
         except (WebDriverException, IndexError):
             print("Reload %s" % count)
 
-    driver.find_elements_by_xpath('//div[@class="fields__validationWrapper___3D3Kv"]')[0]\
+    driver.find_elements_by_xpath('//div[@class="fields__validationWrapper___3D3Kv"]')[0] \
         .find_element_by_tag_name('input').send_keys(email)
-    driver.find_elements_by_xpath('//div[@class="fields__validationWrapper___3D3Kv"]')[1]\
+    driver.find_elements_by_xpath('//div[@class="fields__validationWrapper___3D3Kv"]')[1] \
         .find_element_by_tag_name('input').send_keys(password)
     driver.find_element_by_xpath('//div[@class="fields__submitField___T-_wW"]//button').click()
     time.sleep(10)
@@ -162,11 +162,12 @@ def main(start, proc, end=None):
                                 for i, ma in enumerate(sorted(male, key=lambda i: i[0]), 1):
                                     lists[str(i)].append(ma[1])
                                 for ii, fe in enumerate(sorted(female, key=lambda i: i[0]), 1):
-                                        lists[str(len(male) + ii)].append(fe[1])
+                                    lists[str(len(male) + ii)].append(fe[1])
                             except (StaleElementReferenceException, NoSuchElementException) as e:
                                 for zz in range(1, 63):
                                     lists[str(zz)].append('-')
                             except TimeoutException:
+                                filename = '{0} '.format(counter) + k
                                 save_to_excel(copy_list, filename)
 
                         for horse_url in horses_urls:
@@ -248,6 +249,7 @@ def main(start, proc, end=None):
             save_to_excel(copy_list, filename)
             exit()
         except TimeoutException:
+            filename = '{0} '.format(counter) + k
             save_to_excel(copy_list, filename)
             exit()
     save_to_excel(lists, filename)
@@ -274,4 +276,3 @@ if __name__ == '__main__':
     t8.start()
     t9.start()
     t10.start()
-    
