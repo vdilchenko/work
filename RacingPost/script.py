@@ -13,8 +13,6 @@ from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, TimeoutException
 import os
 
-_VERSION = '1.3'
-
 
 def login(driver, url, email, password):
     """
