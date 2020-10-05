@@ -122,7 +122,7 @@ for address in addresses.values[353000:]:
 	try:
 		driver.find_element_by_xpath(
 			"//div[@class='cutsheet-section cutsheet-section-history-wrap collapsed']").click()
-	except NoSuchElementException:
+	except:
 		pass
 
 	sleep(2)
@@ -155,7 +155,7 @@ for address in addresses.values[353000:]:
 	try:
 		driver.find_element_by_xpath(
 			"//div[@class='cutsheet-section cutsheet-section-taxes collapsed']").click()
-	except NoSuchElementException:
+	except:
 		pass
 
 	sleep(2)
@@ -180,7 +180,7 @@ for address in addresses.values[353000:]:
 	try:
 		driver.find_element_by_xpath(
 			"//div[@class='cutsheet-section cutsheet-section-details collapsed']").click()
-	except NoSuchElementException:
+	except:
 		pass
 
 	soup = BeautifulSoup(driver.page_source, "lxml")
