@@ -39,8 +39,8 @@ def pass_empty():
 
 addresses = pd.read_excel("Nova for new.xlsx", header=1, usecols="A")
 
-email = "razkbeat@gmail.com"
-password = "Len4ikdi"
+email = "vdilchenko@gmail.com"
+password = "Password1234"
 
 options = webdriver.ChromeOptions()
 options.add_argument('headless')
