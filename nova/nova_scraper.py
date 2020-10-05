@@ -43,9 +43,9 @@ email = "vdilchenko@gmail.com"
 password = "Password1234"
 
 options = webdriver.ChromeOptions()
-options.add_argument('headless')
+# options.add_argument('headless')
 
-driver = webdriver.Chrome(chrome_options=options)
+driver = webdriver.Chrome("chromedriver", options=options)
 driver.get("https://www.viewpoint.ca/user/login")
 
 driver.find_element_by_xpath("//input[@name='email']").send_keys(email)
