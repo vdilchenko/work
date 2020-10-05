@@ -17,6 +17,10 @@ import pandas as pd
 
 from collections import defaultdict
 
+from pyvirtualdisplay import Display
+display = Display(visible=0, size=(800, 800))  
+display.start()
+
 
 def survey_check(driver):
 	soup = BeautifulSoup(driver.page_source, "lxml")
