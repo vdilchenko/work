@@ -75,7 +75,7 @@ columns = [
 	"Sold Price", "Duration"] + years + detail_columns
 ws.append(columns)
 
-for address in addresses.values]:
+for address in addresses.values:
 	data = defaultdict(list)
 	for year in years:
 		data[year] = []
