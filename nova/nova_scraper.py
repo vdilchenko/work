@@ -43,7 +43,7 @@ def pass_empty():
 	wb.save("viewpoint_ca8.xlsx")
 
 
-addresses = pd.read_excel("Nova for new.xlsx", header=1, usecols="A")
+addresses = pd.read_excel("data.xlsx", header=1, usecols="A")
 
 email = ""
 password = ""
@@ -75,7 +75,7 @@ columns = [
 	"Sold Price", "Duration"] + years + detail_columns
 ws.append(columns)
 
-for address in addresses.values[362378:]:
+for address in addresses.values]:
 	data = defaultdict(list)
 	for year in years:
 		data[year] = []
