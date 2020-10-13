@@ -17,8 +17,10 @@ import pandas as pd
 
 from collections import defaultdict
 
+import os
+
 from pyvirtualdisplay import Display
-display = Display(visible=0)  
+display = Display(visible=0, size=(1920, 1080))
 display.start()
 
 
@@ -38,18 +40,16 @@ def pass_empty():
 	for _ in columns[1:]:
 		data_to_add.append(None)
 	ws.append(data_to_add)
-	wb.save("viewpoint_ca3.xlsx")
+	wb.save("viewpoint_ca8.xlsx")
 
 
 addresses = pd.read_excel("Nova for new.xlsx", header=1, usecols="A")
 
-email = "vdilchenko@gmail.com"
-password = "Password1234"
+email = ""
+password = ""
 
-options = webdriver.ChromeOptions()
-# options.add_argument('headless')
-
-driver = webdriver.Chrome("chromedriver", options=options)
+current_path = os.getcwd()
+driver = webdriver.Chrome()
 driver.get("https://www.viewpoint.ca/user/login")
 
 driver.find_element_by_xpath("//input[@name='email']").send_keys(email)
@@ -75,7 +75,7 @@ columns = [
 	"Sold Price", "Duration"] + years + detail_columns
 ws.append(columns)
 
-for address in addresses.values[353000:]:
+for address in addresses.values[362378:]:
 	data = defaultdict(list)
 	for year in years:
 		data[year] = []
@@ -102,12 +102,15 @@ for address in addresses.values[353000:]:
 		continue
 	except TimeoutException:
 		try:
-			driver.find_element_by_xpath("//div[@class='vpiw-big']").click()
+			driver.find_element_by_xpath("//button[@class='vpiw-overview-click']").click()
 		except (NoSuchElementException, ElementNotInteractableException):
-			pass_empty()
-			sleep(2)
-			driver.find_element_by_xpath("//input[@name='omnibox']").clear()
-			continue
+			try:
+				driver.find_element_by_xpath("//div[@class='vpiw-big']").click()
+			except (NoSuchElementException, ElementNotInteractableException):
+				pass_empty()
+				sleep(2)
+				driver.find_element_by_xpath("//input[@name='omnibox']").clear()
+				continue
 
 	sleep(3)
 
@@ -211,4 +214,4 @@ for address in addresses.values[353000:]:
 			data_to_add.append(None)
 
 	ws.append(data_to_add)
-	wb.save("viewpoint_ca3.xlsx")
+	wb.save("viewpoint_ca8.xlsx")
