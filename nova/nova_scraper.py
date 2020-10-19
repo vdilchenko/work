@@ -74,13 +74,14 @@ columns = [
 	"Address", "Address from site", "Status", "Start date", "End Date", "List Price",
 	"Sold Price", "Duration"] + years + detail_columns
 ws.append(columns)
+sleep(5)
 
 for address in addresses.values:
 	data = defaultdict(list)
 	for year in years:
 		data[year] = []
 
-	search = WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+	search = WebDriverWait(driver, 3).until(EC.presence_of_element_located(
 		(By.XPATH, "//input[@name='omnibox']")))
 	search.send_keys(address)
 
