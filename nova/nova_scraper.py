@@ -49,7 +49,7 @@ email = ""
 password = ""
 
 current_path = os.getcwd()
-driver = webdriver.Chrome()
+driver = webdriver.Chrome(current_path + "/chromedriver")
 driver.get("https://www.viewpoint.ca/user/login")
 
 driver.find_element_by_xpath("//input[@name='email']").send_keys(email)
