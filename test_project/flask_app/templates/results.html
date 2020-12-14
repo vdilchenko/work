@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Pacifico">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+ 	<link rel=”icon” href="http://obj-cache.cloud.ruanbekker.com/favicon.ico">
+ 	<link href=”//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css” rel=”stylesheet”>
+	<title>Knowledge Repository Search</title>
+</head>
+<body>
+ 	<div class=”container”>
+		<div style=”background:transparent !important” class=”jumbotron”>
+			<div style=”font-family: ‘Times New Roman’”>
+			<p>
+				<center>
+					<font size="6" style=”color:rgb(239,127,26);”> 
+					SEARCH RESULTS</font>
+				</center>
+			</p>
+			</div>
+		</div>
+		<form action="#" method="post">
+			<div class=”input-group”>
+				<input type=”text” class=”form-control input-lg” name="search" placeholder=Search autofocus>
+				<div class=”input-group-btn”>
+					<button class=”btn btn-primary btn-lg” type=”submit”>Search</button>
+				</div>
+			</div>
+			<div class=”input-group”>
+				<input type=”text” class=”form-control input-lg” name="delete" placeholder=Delete autofocus>
+				<div class=”input-group-btn”>
+					<button class=”btn btn-primary btn-lg” type=”submit”>Delete</button>
+				</div>
+			</div>
+		</form>
+		<table class="greyGridTable">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Rubrics</th>
+					<th>Text</th> 
+					<th>Created date</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for i in range(results['id']|length) %}
+				<tr>
+					<td>{{results['id'][i]}}</td>
+					<td>{{results['rubrics'][i]}}</td>
+					<td>{{results['text'][i]}}</td>
+					<td>{{results['created_date'][i]}}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+</div>
+</body>
+</html>
