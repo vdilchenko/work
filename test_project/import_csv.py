@@ -14,19 +14,19 @@ parser.add_argument("--port", type=str, required=False, default=5432, metavar="P
 
 
 def main(engine):
-	df = pd.read_csv('/Users/ilchenkoslava/Downloads/posts.csv')
-	df['rubrics'] = df['rubrics'].apply(lambda x: eval(x))
+    df = pd.read_csv('/Users/ilchenkoslava/Downloads/posts.csv')
+    df['rubrics'] = df['rubrics'].apply(lambda x: eval(x))
 
-	df.to_sql('posts', engine, if_exists='append', index=False,
-		dtype={
-			'text': sqlalchemy.types.VARCHAR(),
-			'rubrics': postgresql.ARRAY(sqlalchemy.types.TEXT()),
-			'created_date': sqlalchemy.types.TIMESTAMP()
-		})
+    df.to_sql('posts', engine, if_exists='append', index=False,
+        dtype={
+            'text': sqlalchemy.types.VARCHAR(),
+            'rubrics': postgresql.ARRAY(sqlalchemy.types.TEXT()),
+            'created_date': sqlalchemy.types.TIMESTAMP()
+        })
 
 
 if __name__ == '__main__':
-	args = parser.parse_args()
+    args = parser.parse_args()
 
     host = args.host
     db = args.dbname
@@ -35,4 +35,4 @@ if __name__ == '__main__':
     port = args.port
 
     engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{db}')
-	main(engine)
+    main(engine)
